@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { Redirect, Router } from "@reach/router";
+import { Redirect, Router, Link } from "@reach/router";
+import { FaLightbulb, FaHistory } from "react-icons/fa";
 
-import CurrentInsights from "./CurrentInsights";
+import NewInsights from "./NewInsights";
 import HistoricalInsights from "./HistoricalInsights";
 import { borderColor } from "../theme";
 import { containerWidth } from "../layout";
@@ -19,6 +20,9 @@ const Styled = {
     flex: 0 1 ${containerWidth};
   `,
   ScrollingContent: styled.div``,
+  Tab: styled(Link)``,
+  InsightIcon: styled(FaLightbulb)``,
+  HistoryIcon: styled(FaHistory)``,
 };
 
 /**
@@ -29,12 +33,19 @@ function ConnectedDashboard() {
   return (
     <>
       <Styled.TabWrapper>
-        <Styled.TabContent>Connected dashboard</Styled.TabContent>
+        <Styled.TabContent>
+          <Styled.Tab to="/dashboard/new">
+            <Styled.InsightIcon /> New Insights
+          </Styled.Tab>
+          <Styled.Tab to="/dashboard/historical">
+            <Styled.HistoryIcon /> Historical Insights
+          </Styled.Tab>
+        </Styled.TabContent>
       </Styled.TabWrapper>
       <Router>
-        <CurrentInsights path="/dashboard/current" />
-        <HistoricalInsights path="/dashboard/historical" />
-        <Redirect from="*" to="/dashboard/current" default noThrow />
+        <NewInsights path="new" />
+        <HistoricalInsights path="historical" />
+        <Redirect from="*" to="/dashboard/new" default noThrow />
       </Router>
     </>
   );
