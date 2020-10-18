@@ -9,6 +9,7 @@ import InfoAlert from "./InfoAlert";
 import ConnectedDashboard from "./ConnectedDashboard";
 import { containerWidth } from "../layout";
 import { uiBlueDark } from "../theme";
+import { useLocalStorage } from "../hooks";
 
 const Styled = {
   Container: styled.div`
@@ -46,7 +47,7 @@ const Styled = {
  * and manages local state of being "connected" or not to the insights network
  */
 function Dashboard(_: RouteComponentProps) {
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnected] = useLocalStorage("isConnected", false);
   return (
     <>
       <Header connected={connected} />

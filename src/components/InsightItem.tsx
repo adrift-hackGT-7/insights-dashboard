@@ -15,16 +15,21 @@ export type InsightItemIcon = "plus" | "minus" | "up" | "people";
 export type InsightItemAction = {
   color: string;
   icon: "check" | "x";
-  onClick: () => void;
+  id: string;
 };
 
-export type InsightItemProps = {
+export type InsightItemDefinition = {
   icon: InsightItemIcon;
+  id: string;
   iconColor?: string;
   header: string;
   headerColor?: string;
   description: string;
   actions?: InsightItemAction[];
+};
+
+export type InsightItemProps = InsightItemDefinition & {
+  onClickAction: (id: string) => void;
 };
 
 // Extract to use in selectors
@@ -102,7 +107,7 @@ const Styled = {
   `,
   ActionButton: styled.button<{ color: string }>`
     outline: none;
-    --color: ${props => props.color};
+    --color: ${(props) => props.color};
     border: 2px dashed var(--color);
     color: var(--color);
     padding: 9px 9px 3px;
@@ -131,6 +136,7 @@ function InsightItem({
   headerColor = fgPrimary,
   description,
   actions = [],
+  onClickAction,
 }: InsightItemProps) {
   const IconComponent = {
     plus: MdAddCircle,
@@ -159,8 +165,12 @@ function InsightItem({
         />
       </Styled.Content>
       <Styled.ActionContainer>
-        {actions.map((action, i) => (
-          <Action key={i} {...action} />
+        {actions.map((action) => (
+          <Action
+            key={action.id}
+            onClick={() => onClickAction(action.id)}
+            {...action}
+          />
         ))}
       </Styled.ActionContainer>
     </Styled.Wrapper>
@@ -203,10 +213,12 @@ function ArrowUpIcon({
   );
 }
 
+type ActionProps = InsightItemAction & { onClick: () => void };
+
 /**
  * Single action button that appears on each item
  */
-function Action({ color, icon, onClick }: InsightItemAction) {
+function Action({ color, icon, onClick }: ActionProps) {
   const IconComponent = {
     check: FaCheck,
     x: FaTimes,
