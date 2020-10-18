@@ -10,12 +10,17 @@ export const uiGreen = "#469F3D";
 export const uiRed = "#EE586B";
 export const uiOrange = "#F0681E";
 export const uiTeal = "#008FB2";
+export const uiBlue = "#3179DE";
+export const uiBlueDark = "#2E7DF7";
+export const uiBlueLight = "rgba(46, 125, 247, 0.15)";
 
 // Contains the global CSS rules for the entire site
 export const global = css`
+  @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
       sans-serif;
     -webkit-font-smoothing: antialiased;

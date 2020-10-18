@@ -4,8 +4,17 @@ import React from "react";
 import NcrLogo from "../images/ncr-logo.png";
 
 const Styled = {
-  Wrapper: styled.span``,
-  NcrLogo: styled.img``,
+  Wrapper: styled.span`
+    color: rgba(0, 0, 0, 0.6);
+  `,
+  NcrLogo: styled.img`
+    opacity: 0.8;
+    width: auto;
+    height: 24px;
+    vertical-align: -6px;
+    display: inline-block;
+    margin-left: 4px;
+  `,
 };
 
 /**

@@ -5,7 +5,7 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 
 import Logo from "../images/logo.png";
 import { containerWidth } from "../layout";
-import { bgSecondary } from "../theme";
+import { bgSecondary, uiBlue, uiGreen, uiRed } from "../theme";
 
 const Styled = {
   Header: styled.div`
@@ -16,26 +16,78 @@ const Styled = {
     background-color: ${bgSecondary};
   `,
   LogoContainer: styled.div`
-    flex-grow: 1;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   `,
   TitleContainer: styled.div`
+    padding: 48px 0;
     flex: 0 1 ${containerWidth};
   `,
   RightSpace: styled.div`
-    flex-grow: 1;
+    align-self: stretch;
+    flex: 1 1 0;
   `,
-  Title: styled.h1``,
-  Status: styled.h3``,
-  Logo: styled.img``,
+  Title: styled.h1`
+    margin-top: 0;
+    margin-bottom: 4px;
+
+    font-weight: normal;
+    font-size: 34px;
+    line-height: 40px;
+    letter-spacing: -0.05em;
+  `,
+  Status: styled.h3`
+    margin-top: 0;
+    margin-bottom: 0;
+
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: -0.006em;
+  `,
+  Logo: styled.img`
+    height: 100px;
+    width: auto;
+  `,
   RightHanger: styled.div`
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 24px;
+    right: 24px;
   `,
-  LogOutButton: styled(Link)``,
-  StatusIconWrapper: styled.span``,
-  ConnectedIcon: styled(FaCheck)``,
-  DisconnectedIcon: styled(FaTimes)``,
+  LogOutButton: styled(Link)`
+    padding: 6px 20px;
+    border: 1px solid ${uiBlue};
+    box-sizing: border-box;
+    border-radius: 8px;
+    color: ${uiBlue};
+    text-shadow: 0px 0px 6px rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+
+    transition: all 0.125s linear;
+    &:hover {
+      background-color: ${uiBlue};
+      color: white;
+    }
+  `,
+  StatusIconWrapper: styled.span`
+    display: inline-block;
+    vertical-align: -2px;
+
+    svg {
+      transform: scale(1.1);
+    }
+  `,
+  ConnectedIcon: styled(FaCheck)`
+    color: ${uiGreen};
+    margin: 0 4px;
+  `,
+  DisconnectedIcon: styled(FaTimes)`
+    color: ${uiRed};
+    margin: 0 3px;
+  `,
 };
 
 type HeaderProps = {

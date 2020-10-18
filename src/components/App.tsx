@@ -11,8 +11,8 @@ const Styled = {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: stretch;
+    align-items: stretch;
+    justify-content: flex-start;
   `,
 };
 
