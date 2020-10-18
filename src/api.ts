@@ -17,7 +17,7 @@ export type InsightApiItem = {
 
 export type InsightApiItemVariant = "add" | "remove" | "increase" | "people";
 
-export type HistoricalNewInsightsApiResponse = {
+export type HistoricalInsightsApiResponse = {
   groups: HistoricalInsightApiGroup[];
 };
 
@@ -95,7 +95,7 @@ export async function mockNewInsightsFetch(): Promise<NewInsightsApiResponse> {
 }
 
 export async function mockHistoricalInsightsFetch(): Promise<
-  HistoricalNewInsightsApiResponse
+  HistoricalInsightsApiResponse
 > {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return {

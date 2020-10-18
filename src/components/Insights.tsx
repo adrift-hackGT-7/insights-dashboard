@@ -31,8 +31,6 @@ type Item = {
 
 const transitionClass = "insights-transition";
 
-console.log(String(transitionClass));
-
 const Styled = {
   TransitionGroup: styled(TransitionGroup)`
     .${transitionClass}-enter {
@@ -107,8 +105,6 @@ function Insights({
   emptyText = "No insights found",
   loading = false,
 }: InsightsProps) {
-  // TODO implement fetching, loading, and empty
-
   // Calculate a flattened map of all groups
   const flattened = useMemo(() => {
     const items: InsightGroupOrItem[] = [];

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { RouteComponentProps } from "@reach/router";
 
 import Insights, { InsightGroup } from "./Insights";
@@ -8,41 +8,37 @@ import {
   InsightItemDefinition,
   InsightItemIcon,
 } from "./InsightItem";
-import {
-  HistoricalNewInsightsApiResponse,
-  mockHistoricalInsightsFetch,
-} from "../api";
+import { HistoricalInsightApiGroup } from "../api";
+import { useStore, useDispatch } from "./Dashboard";
 
 /**
  * Scrollable pane that handles data fetching and loading
  * for a list of historical actionable insights/results at /dashboard/historical
  */
 function HistoricalInsights(_: RouteComponentProps) {
-  const [groups, setGroups] = useState<InsightGroup[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      // Dispatch the fetch call
-      mockHistoricalInsightsFetch()
-        .then((response) => {
-          setLoading(false);
-          setGroups(normalizeApiResponse(response));
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-  }, [loading]);
+  const { historicalInsights, historicalInsightsLoading } = useStore();
+  const dispatch = useDispatch();
+  const groups = useMemo(() => normalizeApiGroups(historicalInsights), [
+    historicalInsights,
+  ]);
 
   return (
     <Insights
       groups={groups}
       emptyText="No historical insights found"
-      loading={loading}
-      onClickAction={(groupId: string, itemId: string, actionId: string) => {
-        setGroups(toggleItem(groups, groupId, itemId, actionId));
-      }}
+      loading={historicalInsightsLoading}
+      onClickAction={useCallback(
+        (groupId: string, itemId: string, actionId: string) =>
+          dispatch({
+            type: "toggleHistoricalItem",
+            payload: {
+              groupId,
+              itemId,
+              action: actionId === "dismiss" ? "dismiss" : "accept",
+            },
+          }),
+        [dispatch]
+      )}
     />
   );
 }
@@ -52,56 +48,6 @@ export default HistoricalInsights;
 // ? =================
 // ? Utility functions
 // ? =================
-
-/**
- * Performs a deep clone of the group list, toggling an item on its way down
- * @param groups - Original groups
- * @param groupId - Group id of item to toggle
- * @param itemId - Id of item to toggle
- * @param actionId - Original action that caused the toggle
- */
-function toggleItem(
-  groups: InsightGroup[],
-  groupId: string,
-  itemId: string,
-  actionId: string
-): InsightGroup[] {
-  const newGroups: InsightGroup[] = [];
-  groups.forEach((group) => {
-    const newItems: InsightItemDefinition[] = [];
-    group.items.forEach((item) => {
-      if (groupId === group.id && itemId === item.id) {
-        // Re-form item based on action
-        if (actionId === "accept") {
-          newItems.push({
-            ...item,
-            header: remakeHeader(item.header, "accepted"),
-            iconColor: uiGreen,
-            headerColor: uiGreen,
-            actions: makeActions(false, true),
-          });
-        } else if (actionId === "dismiss") {
-          newItems.push({
-            ...item,
-            header: remakeHeader(item.header, "dismissed"),
-            iconColor: uiRed,
-            headerColor: uiRed,
-            actions: makeActions(true, false),
-          });
-        }
-      } else {
-        newItems.push(item);
-      }
-    });
-    newGroups.push({
-      id: group.id,
-      header: group.header,
-      items: newItems,
-    });
-  });
-
-  return newGroups;
-}
 
 /**
  * Remakes the header of an item to match the new state
@@ -115,13 +61,13 @@ function remakeHeader(header: string, state: "accepted" | "dismissed"): string {
 }
 
 /**
- * Utility function that normalizes the API response into the object expected
- * @param response - Source response from the API
+ * Utility function that normalizes the API groups into the objects expected
+ * @param sourceGroups - Source groups from the API
  */
-function normalizeApiResponse(
-  response: HistoricalNewInsightsApiResponse
+function normalizeApiGroups(
+  sourceGroups: HistoricalInsightApiGroup[]
 ): InsightGroup[] {
-  const groups: InsightGroup[] = response.groups.map((group) => {
+  const groups: InsightGroup[] = sourceGroups.map((group) => {
     const items: InsightItemDefinition[] = group.items.map((item) => {
       let icon: InsightItemIcon;
       switch (item.variant) {
@@ -203,4 +149,4 @@ function makeActions(accept: boolean, dismiss: boolean) {
   }
 
   return actions;
-};
+}
