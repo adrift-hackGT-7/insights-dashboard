@@ -10,16 +10,18 @@ import { bgTertiary, borderColor } from "../theme";
 const Styled = {
   Wrapper: styled.div`
     background-color: #ffffff;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: flex-start;
+    justify-content: flex-start
+    ;
   `,
   TopHeader: styled.div`
     background-color: ${bgTertiary};
     border-bottom: 1px solid ${borderColor};
     height: 48px;
+    flex-shrink: 0;
 
     display: flex;
     flex-direction: row;
@@ -31,6 +33,14 @@ const Styled = {
     width: auto;
     opacity: 0.15;
   `,
+  Router: styled(Router)`
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow-y: hidden;
+  `,
 };
 
 /**
@@ -40,11 +50,11 @@ function App() {
   return (
     <Styled.Wrapper>
       <Styled.TopHeader><Styled.NcrLogo src={NcrLogo} /></Styled.TopHeader>
-      <Router>
+      <Styled.Router>
         <Login path="/" />
         <Dashboard path="/dashboard/*" />
         <Redirect from="*" to="/" default noThrow />
-      </Router>
+      </Styled.Router>
     </Styled.Wrapper>
   );
 }

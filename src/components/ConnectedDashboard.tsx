@@ -5,7 +5,7 @@ import { FaLightbulb, FaHistory } from "react-icons/fa";
 
 import NewInsights from "./NewInsights";
 import HistoricalInsights from "./HistoricalInsights";
-import { borderColor } from "../theme";
+import { borderColor, uiBlue, fgSecondary } from "../theme";
 import { containerWidth } from "../layout";
 
 const Styled = {
@@ -15,14 +15,43 @@ const Styled = {
     justify-content: space-around;
     align-items: center;
     border-bottom: 1px solid ${borderColor};
+    margin-top: 32px;
+  `,
+  Content: styled.div`
+    overflow-y: auto;
+    flex-grow: 1;
+  `,
+  Router: styled(Router)`
+    margin: 0 auto;
+    max-width: ${containerWidth};
+    width: 100%;
   `,
   TabContent: styled.div`
     flex: 0 1 ${containerWidth};
   `,
-  ScrollingContent: styled.div``,
-  Tab: styled(Link)``,
-  InsightIcon: styled(FaLightbulb)``,
-  HistoryIcon: styled(FaHistory)``,
+  Tab: styled(Link)`
+    display: inline-block;
+    padding: 10px 28px 16px;
+    text-decoration: none;
+    --color: ${fgSecondary};
+    color: var(--color);
+    transform: translateY(1px);
+    transition: all 0.125s linear;
+    border-bottom: 3px solid transparent;
+
+    svg {
+      color: var(--color);
+      opacity: 0.7;
+      margin-right: 8px;
+      vertical-align: -3px;
+      font-size: 18px;
+    }
+
+    &[data-active] {
+      --color: ${uiBlue};
+      border-bottom: 3px solid ${uiBlue};
+    }
+  `,
 };
 
 /**
@@ -34,21 +63,50 @@ function ConnectedDashboard() {
     <>
       <Styled.TabWrapper>
         <Styled.TabContent>
-          <Styled.Tab to="/dashboard/new">
-            <Styled.InsightIcon /> New Insights
-          </Styled.Tab>
-          <Styled.Tab to="/dashboard/historical">
-            <Styled.HistoryIcon /> Historical Insights
-          </Styled.Tab>
+          <Tab path="/dashboard/new" icon={FaLightbulb}>
+            New Insights
+          </Tab>
+          <Tab path="/dashboard/historical" icon={FaHistory}>
+            Historical Insights
+          </Tab>
         </Styled.TabContent>
       </Styled.TabWrapper>
-      <Router>
-        <NewInsights path="new" />
-        <HistoricalInsights path="historical" />
-        <Redirect from="*" to="/dashboard/new" default noThrow />
-      </Router>
+      <Styled.Content>
+        <Styled.Router>
+          <NewInsights path="new" />
+          <HistoricalInsights path="historical" />
+          <Redirect from="*" to="/dashboard/new" default noThrow />
+        </Styled.Router>
+      </Styled.Content>
     </>
   );
 }
 
 export default ConnectedDashboard;
+
+// ? ==============
+// ? Sub components
+// ? ==============
+
+type TabProps = {
+  path: string;
+  children: React.ReactNode;
+  icon: React.ComponentType;
+};
+
+/**
+ * Renders a styled Tab component that has special active styling
+ */
+function Tab({ path, children, icon: Icon }: TabProps) {
+  return (
+    <Styled.Tab
+      to={path}
+      getProps={({ isCurrent }) => ({
+        "data-active": isCurrent ? "true" : undefined,
+      })}
+    >
+      <Icon />
+      {children}
+    </Styled.Tab>
+  );
+}

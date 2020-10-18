@@ -14,6 +14,7 @@ const Styled = {
   Container: styled.div`
     margin: 0 auto;
     max-width: ${containerWidth};
+    width: 100%;
   `,
   ConnectedToggleWrapper: styled.div`
     margin-top: 32px;
@@ -33,7 +34,10 @@ const Styled = {
     color: rgba(0, 0, 0, 0.8);
   `,
   Footer: styled.footer`
-    margin-top: 48px;
+    margin: 0 auto;
+    justify-self: flex-end;
+    margin-top: auto;
+    padding: 24px 12px;
   `,
 };
 
@@ -76,12 +80,12 @@ function Dashboard(_: RouteComponentProps) {
             Connect to a national network of <strong>coffee shops</strong>
           </Styled.ConnectedToggleLabel>
         </Styled.ConnectedToggleWrapper>
-        {connected && <ConnectedDashboard />}
-        {!connected && <PathNormalizer />}
-        <Styled.Footer>
-          <PoweredBy />
-        </Styled.Footer>
       </Styled.Container>
+      {connected && <ConnectedDashboard />}
+      {!connected && <PathNormalizer />}
+      <Styled.Footer>
+        <PoweredBy />
+      </Styled.Footer>
     </>
   );
 }

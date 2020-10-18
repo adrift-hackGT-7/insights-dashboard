@@ -27,14 +27,98 @@ export type InsightItemProps = {
   actions?: InsightItemAction[];
 };
 
+// Extract to use in selectors
+const ActionContainer = styled.div`
+  right: 0;
+  top: 0;
+  bottom: 0;
+  position: absolute;
+
+  background-image: linear-gradient(to right, transparent 0%, white 25%);
+  padding: 12px;
+  padding-left: 48px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+
+  // Start out as hidden
+  transition: all 0.125s linear;
+  pointer-events: none;
+  opacity: 0;
+`;
+
 const Styled = {
-  Wrapper: styled.div``,
-  IconContainer: styled.div``,
-  Content: styled.div``,
-  Header: styled.h4``,
-  Description: styled.p``,
-  ActionContainer: styled.div``,
-  ActionButton: styled.button<{ color: string }>``,
+  ActionContainer,
+  Wrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 12px;
+    position: relative;
+
+    &:hover {
+      ${ActionContainer} {
+        pointer-events: initial;
+        opacity: 1;
+      }
+    }
+  `,
+  IconContainer: styled.div`
+    padding-right: 12px;
+    font-size: 48px;
+    line-height: 0;
+  `,
+  Content: styled.div`
+    padding-bottom: 6px;
+  `,
+  Header: styled.h4`
+    margin-top: 6px;
+    margin-bottom: 0;
+
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 18px;
+
+    letter-spacing: -0.006em;
+    color: ${fgPrimary};
+  `,
+  Description: styled.p`
+    margin-top: 8px;
+    margin-bottom: 0;
+
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 16px;
+
+    letter-spacing: 0.004em;
+    color: rgba(60, 60, 67, 0.65);
+  `,
+  ActionButton: styled.button<{ color: string }>`
+    outline: none;
+    --color: ${props => props.color};
+    border: 2px dashed var(--color);
+    color: var(--color);
+    padding: 9px 9px 3px;
+    border-radius: 8px;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 12px;
+
+    font-size: 20px;
+    transition: all 0.125s linear;
+
+    &:hover {
+      background-color: var(--color);
+      color: white !important;
+    }
+  `,
 };
 
 /**
@@ -114,7 +198,7 @@ function ArrowUpIcon({
   return (
     <MdArrowDropDownCircle
       {...rest}
-      style={{ ...rest, transform: "rotate(180deg)" } as React.CSSProperties}
+      style={{ ...style, transform: "rotate(180deg)" } as React.CSSProperties}
     />
   );
 }
@@ -130,7 +214,7 @@ function Action({ color, icon, onClick }: InsightItemAction) {
 
   return (
     <Styled.ActionButton onClick={onClick} color={color}>
-      <IconComponent style={{ color }} />
+      <IconComponent />
     </Styled.ActionButton>
   );
 }

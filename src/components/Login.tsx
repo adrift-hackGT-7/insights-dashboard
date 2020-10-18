@@ -12,6 +12,7 @@ const Styled = {
   Container: styled.div`
     margin: 0 auto;
     max-width: ${containerWidth};
+    width: 100%;
     padding-top: 96px;
     padding-bottom: 64px;
   `,
