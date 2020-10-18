@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Insights Dashboard",
+  "name": "Insights dashboard created for HackGT 2020 by Varnika Budati, Michael Chen, Bhanu Garg, and Joseph Azevedo",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#3179DE",
   "background_color": "#ffffff"
 }
