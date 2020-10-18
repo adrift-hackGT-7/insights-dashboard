@@ -1,93 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "@reach/router";
 
 import Insights, { InsightGroup } from "./Insights";
 import { uiRed, uiGreen, uiOrange, uiTeal } from "../theme";
-import { InsightItemAction, InsightItemDefinition } from "./InsightItem";
-
-const mockActions: InsightItemAction[] = [
-  {
-    icon: "check" as const,
-    color: uiGreen,
-    id: "accept",
-  },
-  {
-    icon: "x" as const,
-    color: uiRed,
-    id: "dismiss",
-  },
-];
-
-const initialGroups: InsightGroup[] = [
-  {
-    header: "Catalog",
-    id: "catalog",
-    items: [
-      {
-        icon: "plus",
-        id: "add-strawberry-mocha-latte",
-        iconColor: uiGreen,
-        header:
-          "Add *Strawberry Mocha Latte* to your catalog for up to *34%* increased revenue",
-        description:
-          "Based on sales data in 210 other stores that stock this item in the past 2 months",
-        actions: mockActions,
-      },
-      {
-        icon: "minus",
-        id: "remove-mocha-americano",
-        iconColor: uiRed,
-        header: "Remove *Mocha Americano* from your catalog",
-        description:
-          "Overall revenue contribution: *0.001%* (based on sales data in this store over the past year). Overall market revenue contribution: *0.00056%* (based on sales data in 21 other stores that stock this item in the past year.",
-        actions: mockActions,
-      },
-    ],
-  },
-  {
-    header: "Promotions",
-    id: "promotions",
-    items: [
-      {
-        icon: "up",
-        id: "hazelnut-espresso",
-        iconColor: uiTeal,
-        header:
-          "Promote *Hazelnut Espresso* for up to *70%* sales growth on that item and *12%* increased revenue",
-        description:
-          "Based on sales data in 12 other stores that promoted this item in the past 2 months",
-        actions: mockActions,
-      },
-    ],
-  },
-  {
-    header: "Staffing",
-    id: "staffing",
-    items: [
-      {
-        icon: "people",
-        id: "increase-staffing-thursday-fridays",
-        iconColor: uiOrange,
-        header:
-          "Increase staffing on *Thursdays* and *Fridays* from *11:00 AM* to *3:00 PM* to see potential revenue increases of *28%*",
-        description:
-          "Labor cost increase (per month): *$ 1,201.31*\nPotential revenue increase (per month): *$ 4,901.77*\nOverall potential increase in profit: *$ 3,700,46*",
-        actions: mockActions,
-      },
-    ],
-  },
-];
+import { InsightItemDefinition, InsightItemIcon } from "./InsightItem";
+import { mockNewInsightsFetch, NewInsightsApiResponse } from "../api";
 
 /**
  * Scrollable pane that handles data fetching and loading
  * for a list of current actionable insights at /dashboard/new
  */
 function NewInsights(_: RouteComponentProps) {
-  const [groups, setGroups] = useState(initialGroups);
+  const [groups, setGroups] = useState<InsightGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading) {
+      // Dispatch the fetch call
+      mockNewInsightsFetch()
+        .then((response) => {
+          setLoading(false);
+          setGroups(normalizeApiResponse(response));
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+  }, [loading]);
+
   return (
     <Insights
       groups={groups}
       emptyText="No new insights found"
+      loading={loading}
       onClickAction={(groupId: string, itemId: string, _actionId: string) => {
         // TODO add to historical items based on approval/dismissal
         setGroups(removeItem(groups, groupId, itemId));
@@ -102,7 +47,18 @@ export default NewInsights;
 // ? Helper functions
 // ? ================
 
-function removeItem(groups: InsightGroup[], groupId: string, itemId: string): InsightGroup[] {
+/**
+ * Performs a deep clone of the group list, removing an item (and its group if needed)
+ * along the way
+ * @param groups - Original groups
+ * @param groupId - Group id of item to remove
+ * @param itemId - Id of item to remove
+ */
+function removeItem(
+  groups: InsightGroup[],
+  groupId: string,
+  itemId: string
+): InsightGroup[] {
   const newGroups: InsightGroup[] = [];
   groups.forEach((group) => {
     if (groupId !== group.id) {
@@ -116,7 +72,7 @@ function removeItem(groups: InsightGroup[], groupId: string, itemId: string): In
         newItems.push(item);
         return;
       }
-    })
+    });
 
     // Skip now-empty groups
     if (newItems.length !== 0) {
@@ -124,9 +80,68 @@ function removeItem(groups: InsightGroup[], groupId: string, itemId: string): In
         id: group.id,
         header: group.header,
         items: newItems,
-      })
+      });
     }
   });
 
   return newGroups;
+}
+
+/**
+ * Utility function that normalizes the API response into the object expected
+ * @param response - Source response from the API
+ */
+function normalizeApiResponse(response: NewInsightsApiResponse): InsightGroup[] {
+  const groups: InsightGroup[] = response.groups.map((group) => {
+    const items: InsightItemDefinition[] = group.items.map((item) => {
+      let icon: InsightItemIcon;
+      let iconColor: string;
+      switch (item.variant) {
+        case "add":
+          icon = "plus";
+          iconColor = uiGreen;
+          break;
+        case "remove":
+          icon = "minus";
+          iconColor = uiRed;
+          break;
+        case "increase":
+          icon = "up";
+          iconColor = uiTeal;
+          break;
+        case "people":
+          icon = "people";
+          iconColor = uiOrange;
+          break;
+      }
+
+      return {
+        id: item.id,
+        icon,
+        iconColor,
+        header: item.header,
+        description: item.description,
+        actions: [
+          {
+            icon: "check",
+            color: uiGreen,
+            id: "accept",
+          },
+          {
+            icon: "x",
+            color: uiRed,
+            id: "dismiss",
+          },
+        ],
+      };
+    });
+
+    return {
+      id: group.id,
+      header: group.header,
+      items,
+    };
+  });
+
+  return groups;
 }

@@ -1,9 +1,11 @@
 import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { useNProgress } from "@tanem/react-nprogress";
 
 import EmptyTray from "../images/empty-tray.png";
 import InsightHeader from "./InsightHeader";
+import ProgressBar from "./ProgressBar";
 import InsightItem, { InsightItemDefinition } from "./InsightItem";
 
 export type InsightGroup = {
@@ -16,6 +18,7 @@ export type InsightsProps = {
   groups: InsightGroup[];
   onClickAction: (groupId: string, itemId: string, actionId: string) => void;
   emptyText?: string;
+  loading?: boolean;
 };
 
 type InsightGroupOrItem = Group | Item;
@@ -60,7 +63,7 @@ const Styled = {
   Insights: styled.div`
     position: relative;
   `,
-  EmptyWrapper: styled.div`
+  PlaceholderWrapper: styled.div`
     position: absolute;
     top: 0;
     left: 0;
@@ -79,7 +82,7 @@ const Styled = {
     margin-bottom: 0;
     margin-top: 0;
   `,
-  EmptyText: styled.p`
+  PlaceholderText: styled.p`
     margin-top: -4px;
     margin-bottom: 0;
 
@@ -90,6 +93,9 @@ const Styled = {
     letter-spacing: -0.006em;
     color: rgba(0, 0, 0, 0.8);
   `,
+  ProgressBar: styled(ProgressBar)`
+    margin-bottom: 24px;
+  `,
 };
 
 /**
@@ -99,6 +105,7 @@ function Insights({
   groups,
   onClickAction,
   emptyText = "No insights found",
+  loading = false,
 }: InsightsProps) {
   // TODO implement fetching, loading, and empty
 
@@ -119,6 +126,16 @@ function Insights({
     });
     return items;
   }, [groups]);
+
+  if (loading) {
+    return (
+      <Styled.Insights>
+        <Styled.PlaceholderWrapper>
+          <Loading />
+        </Styled.PlaceholderWrapper>
+      </Styled.Insights>
+    );
+  }
 
   // Use a transition group
   return (
@@ -144,13 +161,36 @@ function Insights({
         ))}
       </Styled.TransitionGroup>
       {flattened.length === 0 && (
-        <Styled.EmptyWrapper>
+        <Styled.PlaceholderWrapper>
           <Styled.EmptyImage src={EmptyTray} />
-          <Styled.EmptyText>{emptyText}</Styled.EmptyText>
-        </Styled.EmptyWrapper>
+          <Styled.PlaceholderText>{emptyText}</Styled.PlaceholderText>
+        </Styled.PlaceholderWrapper>
       )}
     </Styled.Insights>
   );
 }
 
 export default Insights;
+
+// ? ==============
+// ? Sub-components
+// ? ==============
+
+function Loading() {
+  const { animationDuration, progress } = useNProgress({
+    isAnimating: true,
+    incrementDuration: 200,
+    minimum: 0.20,
+  });
+
+  return (
+    <>
+      <Styled.ProgressBar
+        width={240}
+        progress={progress}
+        animationDuration={animationDuration}
+      />
+      <Styled.PlaceholderText>Loading insights...</Styled.PlaceholderText>
+    </>
+  );
+}
