@@ -93,6 +93,7 @@ function HistoricalInsights(_: RouteComponentProps) {
   return (
     <Insights
       groups={groups}
+      emptyText="No historical insights found"
       onClickAction={(groupId: string, itemId: string, actionId: string) => {
         const newGroups: InsightGroup[] = [];
         groups.forEach((group) => {

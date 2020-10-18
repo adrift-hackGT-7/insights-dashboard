@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
+import EmptyTray from "../images/empty-tray.png";
 import InsightHeader from "./InsightHeader";
 import InsightItem, { InsightItemDefinition } from "./InsightItem";
 
@@ -14,6 +15,7 @@ export type InsightGroup = {
 export type InsightsProps = {
   groups: InsightGroup[];
   onClickAction: (groupId: string, itemId: string, actionId: string) => void;
+  emptyText?: string;
 };
 
 type InsightGroupOrItem = Group | Item;
@@ -55,12 +57,49 @@ const Styled = {
   InsightHeader: styled(InsightHeader)`
     padding-top: 32px;
   `,
+  Insights: styled.div`
+    position: relative;
+  `,
+  EmptyWrapper: styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  `,
+  EmptyImage: styled.img`
+    width: 92px;
+    height: auto;
+    opacity: 0.175;
+
+    margin-bottom: 0;
+    margin-top: 0;
+  `,
+  EmptyText: styled.p`
+    margin-top: -4px;
+    margin-bottom: 0;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.006em;
+    color: rgba(0, 0, 0, 0.8);
+  `,
 };
 
 /**
  * Represents a list of groups of insights
  */
-function Insights({ groups, onClickAction }: InsightsProps) {
+function Insights({
+  groups,
+  onClickAction,
+  emptyText = "No insights found",
+}: InsightsProps) {
   // TODO implement fetching, loading, and empty
 
   // Calculate a flattened map of all groups
@@ -83,26 +122,34 @@ function Insights({ groups, onClickAction }: InsightsProps) {
 
   // Use a transition group
   return (
-    <Styled.TransitionGroup>
-      {flattened.map((item) => (
-        <CSSTransition
-          key={item.id}
-          timeout={200}
-          classNames={String(transitionClass)}
-        >
-          {item.type === "group" ? (
-            <Styled.InsightHeader>{item.header}</Styled.InsightHeader>
-          ) : (
-            <InsightItem
-              {...item}
-              onClickAction={(actionId: string) =>
-                onClickAction(item.groupId, item.originalId, actionId)
-              }
-            />
-          )}
-        </CSSTransition>
-      ))}
-    </Styled.TransitionGroup>
+    <Styled.Insights>
+      <Styled.TransitionGroup>
+        {flattened.map((item) => (
+          <CSSTransition
+            key={item.id}
+            timeout={200}
+            classNames={String(transitionClass)}
+          >
+            {item.type === "group" ? (
+              <Styled.InsightHeader>{item.header}</Styled.InsightHeader>
+            ) : (
+              <InsightItem
+                {...item}
+                onClickAction={(actionId: string) =>
+                  onClickAction(item.groupId, item.originalId, actionId)
+                }
+              />
+            )}
+          </CSSTransition>
+        ))}
+      </Styled.TransitionGroup>
+      {flattened.length === 0 && (
+        <Styled.EmptyWrapper>
+          <Styled.EmptyImage src={EmptyTray} />
+          <Styled.EmptyText>{emptyText}</Styled.EmptyText>
+        </Styled.EmptyWrapper>
+      )}
+    </Styled.Insights>
   );
 }
 

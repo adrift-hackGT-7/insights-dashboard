@@ -87,6 +87,7 @@ function NewInsights(_: RouteComponentProps) {
   return (
     <Insights
       groups={groups}
+      emptyText="No new insights found"
       onClickAction={(groupId: string, itemId: string, _actionId: string) => {
         // TODO add to historical items based on approval/dismissal
         setGroups(removeItem(groups, groupId, itemId));
