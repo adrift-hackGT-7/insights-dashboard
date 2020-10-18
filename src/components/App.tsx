@@ -4,6 +4,8 @@ import { Router, Redirect } from "@reach/router";
 
 import Login from "./Login";
 import Dashboard from "./Dashboard";
+import NcrLogo from "../images/ncr-logo.png";
+import { bgTertiary, borderColor } from "../theme";
 
 const Styled = {
   Wrapper: styled.div`
@@ -14,6 +16,21 @@ const Styled = {
     align-items: stretch;
     justify-content: flex-start;
   `,
+  TopHeader: styled.div`
+    background-color: ${bgTertiary};
+    border-bottom: 1px solid ${borderColor};
+    height: 48px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  `,
+  NcrLogo: styled.img`
+    height: 24px;
+    width: auto;
+    opacity: 0.15;
+  `,
 };
 
 /**
@@ -22,6 +39,7 @@ const Styled = {
 function App() {
   return (
     <Styled.Wrapper>
+      <Styled.TopHeader><Styled.NcrLogo src={NcrLogo} /></Styled.TopHeader>
       <Router>
         <Login path="/" />
         <Dashboard path="/dashboard/*" />

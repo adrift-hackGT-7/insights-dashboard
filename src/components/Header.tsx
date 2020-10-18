@@ -14,6 +14,8 @@ const Styled = {
     align-items: center;
     justify-content: flex-start;
     background-color: ${bgSecondary};
+    position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   `,
   LogoContainer: styled.div`
     flex: 1 1 0;
@@ -58,7 +60,8 @@ const Styled = {
     right: 24px;
   `,
   LogOutButton: styled(Link)`
-    padding: 6px 20px;
+    display: inline-block;
+    padding: 10px 26px;
     border: 1px solid ${uiBlue};
     box-sizing: border-box;
     border-radius: 8px;
