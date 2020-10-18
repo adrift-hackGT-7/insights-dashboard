@@ -1,7 +1,7 @@
 import { css } from "@emotion/core";
 
 export const bgMain = "#ffffff";
-export const bgSecondary = "#eeeeee";
+export const bgSecondary = "rgba(116, 116, 128, 0.08)";
 export const borderColor = "rgba(60, 60, 67, 0.2)";
 export const fgPrimary = "#080808";
 export const fgSecondary = "rgba(60, 60, 67, 1)";
