@@ -1,11 +1,7 @@
 import styled from "@emotion/styled";
 import React, { useMemo } from "react";
-import {
-  MdRemoveCircle,
-  MdAddCircle,
-  MdArrowDropDownCircle,
-  MdAccountCircle,
-} from "react-icons/md";
+import { MdRemoveCircle, MdAddCircle, MdAccountCircle } from "react-icons/md";
+import { HiArrowCircleUp } from "react-icons/hi";
 import { FaCheck, FaTimes } from "react-icons/fa";
 
 import { fgPrimary, fgSecondary } from "../theme";
@@ -142,7 +138,7 @@ function InsightItem({
     plus: MdAddCircle,
     minus: MdRemoveCircle,
     people: MdAccountCircle,
-    up: ArrowUpIcon,
+    up: HiArrowCircleUp,
   }[icon];
 
   const transformedHeader = useMemo(() => transformText(header), [header]);
@@ -197,21 +193,6 @@ function transformText(source: string): string {
 // ? ==============
 // ? Sub components
 // ? ==============
-
-/**
- * Utility up arrow that rotates the down arrow icon
- */
-function ArrowUpIcon({
-  style = {},
-  ...rest
-}: React.ComponentProps<typeof MdArrowDropDownCircle>) {
-  return (
-    <MdArrowDropDownCircle
-      {...rest}
-      style={{ ...style, transform: "rotate(180deg)" } as React.CSSProperties}
-    />
-  );
-}
 
 type ActionProps = InsightItemAction & { onClick: () => void };
 
